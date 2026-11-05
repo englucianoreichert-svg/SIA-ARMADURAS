@@ -85,3 +85,14 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 ## Pacote restaurado — versão 1.4 sem desenhos ilustrativos
 - Removidos os esquemas SVG adicionados na versão experimental 1.4.1.
 - Mantidos os módulos, campos, cálculos e padrões da versão 1.4.
+
+## Versão 1.5 — Módulo 07: Telas soldadas
+- Removido o fck dos dados de entrada do módulo.
+- Seleção da família Q, T, L, R ou M, seguida da numeração disponível no catálogo.
+- Inserido catálogo técnico de telas Gerdau com diâmetros, espaçamentos, áreas de aço e massa nominal.
+- Removidos os campos manuais de massa, diâmetros e espaçamentos.
+- Mantidos como entradas a área aplicada (m²) e o acréscimo estimado (%), com padrão de 10% editável.
+- Resultados apresentam área e massa sem acréscimo e com acréscimo, além dos dados técnicos da tela.
+- Incluída referência de painéis equivalentes pela área nominal de 2,45 × 6,00 m; não representa paginação executiva.
+- Fonte de referência do catálogo: https://mais.gerdau.com.br/produtos/tela-soldada-nervurada
+- O acréscimo percentual é estimativa de consumo definida pelo usuário, não exigência normativa. Para áreas irregulares, o quantitativo real depende de paginação, recortes e sobreposições.
