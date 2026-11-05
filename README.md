@@ -56,4 +56,9 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 - Desenhos técnicos SVG com cotas e identificação das barras.
 - Intercâmbio JSON com rotinas AutoLISP para AutoCAD 2025.
 - Testes automatizados dos cálculos.
-\n\n### Nota sobre bitolas padronizadas\nA lista de seleção utiliza 5; 6,3; 8; 10; 12,5; 16; 20; 25; 32; 40 mm. O diâmetro nominal de 32 mm é mantido na série padronizada; 30 mm não deve ser apresentado como bitola nominal padronizada sem especificação particular do produto.\n\n\n## Versão 0.9 — Módulo 03\n- Módulo 03 configurado para armaduras longitudinais.\n- Removidos os campos manuais de diâmetro interno do pino e ponta reta.\n- Diâmetro mínimo do pino calculado pela Tabela 9.1 da ABNT NBR 6118:2023 conforme bitola e aço.\n- Ponta reta mínima calculada automaticamente: 2φ (gancho semicircular), 4φ (ângulo interno de 45°) ou 8φ (ângulo reto).\n
+\n\n### Nota sobre bitolas padronizadas\nA lista de seleção utiliza 5; 6,3; 8; 10; 12,5; 16; 20; 25; 32; 40 mm. O diâmetro nominal de 32 mm é mantido na série padronizada; 30 mm não deve ser apresentado como bitola nominal padronizada sem especificação particular do produto.\n\n\n## Versão 1.0 — Módulo 03\n- Módulo 03 configurado para armaduras longitudinais.\n- Removidos os campos manuais de diâmetro interno do pino e ponta reta.\n- Diâmetro mínimo do pino calculado pela Tabela 9.1 da ABNT NBR 6118:2023 conforme bitola e aço.\n- Ponta reta mínima calculada automaticamente: 2φ (gancho semicircular), 4φ (ângulo interno de 45°) ou 8φ (ângulo reto).\n
+
+## Versão 1.0
+- Campo fck incluído em todos os nove módulos, com seleção 9, 12, 15, 20, 25, 30, 35, 40, 45 e 50 MPa.
+- fck aparece nos resultados de todos os módulos. Nos módulos sem fórmula dependente de fck, o valor é identificado como dado do concreto e não altera o cálculo.
+- fck abaixo de 20 MPa gera alerta para revisão do enquadramento normativo.
