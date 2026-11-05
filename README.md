@@ -1,6 +1,6 @@
 # SIA — Sistema Integrado de Armaduras
 
-**Versão 0.3**
+**Versão 1.5.1**
 
 Aplicação web estática (HTML, CSS e JavaScript), preparada para publicação no GitHub Pages.
 
@@ -94,5 +94,14 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 - Mantidos como entradas a área aplicada (m²) e o acréscimo estimado (%), com padrão de 10% editável.
 - Resultados apresentam área e massa sem acréscimo e com acréscimo, além dos dados técnicos da tela.
 - Incluída referência de painéis equivalentes pela área nominal de 2,45 × 6,00 m; não representa paginação executiva.
-- Fonte de referência do catálogo: https://mais.gerdau.com.br/produtos/tela-soldada-nervurada
+- Fonte de referência do catálogo: Catálogo Gerdau Construção Civil — Tela Soldada Nervurada (https://gsn.gerdau.com/sites/gsn_gerdau/files/downloadable_files/Cat%C3%A1logo%20Constru%C3%A7%C3%A3o%20Civil.pdf)
 - O acréscimo percentual é estimativa de consumo definida pelo usuário, não exigência normativa. Para áreas irregulares, o quantitativo real depende de paginação, recortes e sobreposições.
+
+
+## Versão 1.5.1 — Correção do catálogo de telas (Módulo 07)
+- Conferência do catálogo contra o catálogo oficial Gerdau (Construção Civil).
+- Removidas 16 designações inexistentes no catálogo Gerdau: Q 166, 238, 385, 709; T 166, 238, 385; L 166, 238, 385, 709; R 166, 238; M 166, 238, 385.
+- Incluídas 16 designações que faltavam: Q 159, 246, 396, 636; T 159, 246, 396; L 159, 246, 396, 636; R 159, 246; M 159, 246, 396.
+- Catálogo completo com 46 telas: Q (14), T (10), L (11), R (5) e M (6).
+- Corrigida a área de aço transversal de R 196 (1,30), R 283 (1,88) e M 283 (1,41 cm²/m).
+- Cabeçalho do README e identificação de versão na página atualizados.
