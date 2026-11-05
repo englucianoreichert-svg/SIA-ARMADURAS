@@ -62,3 +62,8 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 - Campo fck incluído em todos os nove módulos, com seleção 9, 12, 15, 20, 25, 30, 35, 40, 45 e 50 MPa.
 - fck aparece nos resultados de todos os módulos. Nos módulos sem fórmula dependente de fck, o valor é identificado como dado do concreto e não altera o cálculo.
 - fck abaixo de 20 MPa gera alerta para revisão do enquadramento normativo.
+
+
+## Versão 1.1
+- Lista de fck reescrita com opções HTML explícitas de 9, 12 e 15 MPa, além das demais classes.
+- Parâmetro de versão no carregamento de `app.js` para evitar que o navegador reutilize o JavaScript antigo em cache.

@@ -20,7 +20,18 @@ function fieldHTML(f){
  let control="";
  if(type==="select") control=`<select id="${id}">${opts.map(x=>`<option value="${x}" ${x===value?"selected":""}>${x}°</option>`).join("")}</select>`;
  else if(type==="bitola") control=`<select id="${id}">${[5,6.3,8,10,12.5,16,20,25,32,40].map(x=>`<option value="${x}" ${Number(x)===Number(value)?"selected":""}>${String(x).replace(".",",")}</option>`).join("")}</select>`;
- else if(type==="fck") control=`<select id="${id}">${[9,12,15,20,25,30,35,40,45,50].map(x=>`<option value="${x}" ${x===value?"selected":""}>${x} MPa</option>`).join("")}</select>`;
+ else if(type==="fck") control=`<select id="${id}" class="fck-select">
+  <option value="9" ${Number(value)===9?"selected":""}>9 MPa</option>
+  <option value="12" ${Number(value)===12?"selected":""}>12 MPa</option>
+  <option value="15" ${Number(value)===15?"selected":""}>15 MPa</option>
+  <option value="20" ${Number(value)===20?"selected":""}>20 MPa</option>
+  <option value="25" ${Number(value)===25?"selected":""}>25 MPa</option>
+  <option value="30" ${Number(value)===30?"selected":""}>30 MPa</option>
+  <option value="35" ${Number(value)===35?"selected":""}>35 MPa</option>
+  <option value="40" ${Number(value)===40?"selected":""}>40 MPa</option>
+  <option value="45" ${Number(value)===45?"selected":""}>45 MPa</option>
+  <option value="50" ${Number(value)===50?"selected":""}>50 MPa</option>
+</select>`;
  else if(type==="steel") control=`<select id="${id}"><option value="CA-50" ${value==="CA-50"?"selected":""}>CA-50</option><option value="CA-60" ${value==="CA-60"?"selected":""}>CA-60</option></select>`;
  else if(type==="anchorType") control=`<select id="${id}"><option value="Lb1" ${value==="Lb1"?"selected":""}>Lb1 — Reto (boa aderência)</option><option value="Lbe" ${value==="Lbe"?"selected":""}>Lbe — Gancho (má aderência)</option></select>`;
  else if(type==="yesno") control=`<select id="${id}"><option value="Não" ${value==="Não"?"selected":""}>Não</option><option value="Sim" ${value==="Sim"?"selected":""}>Sim</option></select>`;
