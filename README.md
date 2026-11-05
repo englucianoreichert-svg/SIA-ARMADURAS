@@ -1,8 +1,15 @@
 # SIA — Sistema Integrado de Armaduras
 
+**Versão 0.2**
+
 Aplicação web estática (HTML, CSS e JavaScript), preparada para publicação no GitHub Pages.
 
-## Módulos da versão inicial
+## Ajustes da versão 0.2
+- Campos de diâmetro exibem a unidade `mm` fora do campo editável.
+- Campos de bitola usam o rótulo `Ø BARRA =`, com o valor numérico editável e `mm` como unidade fixa externa.
+- Demais campos em milímetros também exibem a unidade fora do campo de entrada.
+
+## Módulos incluídos
 1. Emendas por traspasse — estimativa com comprimento básico e fator informado.
 2. Ancoragem com gancho — geometria do arco e prolongamento.
 3. Dobras — raio e comprimento de arco pelo eixo da barra.

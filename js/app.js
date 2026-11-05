@@ -13,7 +13,14 @@ const $=s=>document.querySelector(s), nav=$("#moduleNav"), cards=$("#moduleCards
 let current=null, lastResult=null;
 const fmt=(n,d=2)=>Number(n).toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
 const num=(v)=>Number(v);
-function fieldHTML(f){let [id,label,value,type,opts]=f;return `<div class="field ${label.length>35?"full":""}"><label for="${id}">${label}</label>${type==="select"?`<select id="${id}">${opts.map(x=>`<option value="${x}" ${x===value?"selected":""}>${x}°</option>`).join("")}</select>`:`<input id="${id}" type="${type}" value="${value}" ${type==="number"?'step="any"':''}>`}</div>`}
+function fieldHTML(f){
+ let [id,label,value,type,opts]=f;
+ const isMm=label.includes("(mm)");
+ const cleanLabel=label.replace(/\s*\(mm\)/i,"");
+ const displayLabel=["phi","oldPhi","newPhi"].includes(id)?"Ø BARRA =":cleanLabel;
+ const control=type==="select"?`<select id="${id}">${opts.map(x=>`<option value="${x}" ${x===value?"selected":""}>${x}°</option>`).join("")}</select>`:`<input id="${id}" type="${type}" value="${value}" ${type==="number"?'step="any"':''}>`;
+ return `<div class="field ${label.length>35?"full":""}"><label for="${id}">${displayLabel}</label>${isMm?`<div class="input-unit">${control}<span>mm</span></div>`:control}</div>`
+}
 function values(){let o={};current.fields.forEach(f=>o[f[0]]=$( "#"+f[0]).value);return o}
 function showModule(id){current=MODULES.find(m=>m.id===id);$("#welcome").classList.add("hidden");$("#workspace").classList.remove("hidden");$("#moduleNumber").textContent="MÓDULO "+current.n;$("#moduleTitle").textContent=current.name;$("#moduleDescription").textContent=current.desc;$("#calcForm").innerHTML=`<div class="field-grid">${current.fields.map(fieldHTML).join("")}</div>`;$("#results").innerHTML='<div class="empty">Preencha os dados e selecione Calcular.</div>';$("#diagram").innerHTML="";lastResult=null;renderHistory();document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.id===id));}
 MODULES.forEach(m=>{let b=document.createElement("button");b.dataset.id=m.id;b.innerHTML=`<span class="nav-num">${m.n}</span>${m.name}`;b.onclick=()=>showModule(m.id);nav.append(b);let c=document.createElement("button");c.className="module-card";c.innerHTML=`<span class="num">MÓDULO ${m.n}</span><b>${m.name}</b><small>${m.desc}</small>`;c.onclick=()=>showModule(m.id);cards.append(c)});
@@ -58,6 +65,6 @@ $("#calculate").onclick=()=>{try{calculate()}catch(e){$("#results").innerHTML=`<
 $("#saveResult").onclick=()=>{if(!lastResult){alert("Calcule antes de salvar.");return}let h=JSON.parse(localStorage.getItem(historyKey())||"[]");h.push(lastResult);localStorage.setItem(historyKey(),JSON.stringify(h));renderHistory()};
 $("#resetModule").onclick=()=>showModule(current.id);
 $("#clearHistory").onclick=()=>{localStorage.removeItem(historyKey());renderHistory()};
-$("#exportData").onclick=()=>{let data={app:"SIA",version:"0.1",exportedAt:new Date().toISOString(),storage:Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith("sia-history-")).map(k=>[k,localStorage.getItem(k)]))};download("sia-backup.json",JSON.stringify(data,null,2),"application/json")};
+$("#exportData").onclick=()=>{let data={app:"SIA",version:"0.2",exportedAt:new Date().toISOString(),storage:Object.fromEntries(Object.keys(localStorage).filter(k=>k.startsWith("sia-history-")).map(k=>[k,localStorage.getItem(k)]))};download("sia-backup.json",JSON.stringify(data,null,2),"application/json")};
 $("#importData").onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());Object.entries(d.storage||{}).forEach(([k,v])=>{if(k.startsWith("sia-history-"))localStorage.setItem(k,v)});alert("Backup importado.");if(current)renderHistory()}catch{alert("Arquivo JSON inválido.")}};
 function download(name,content,type){let a=document.createElement("a"),u=URL.createObjectURL(new Blob([content],{type}));a.href=u;a.download=name;a.click();URL.revokeObjectURL(u)}
