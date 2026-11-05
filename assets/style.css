@@ -2,3 +2,6 @@
 
 /* Versão 0.2: unidade de medida posicionada fora do campo editável. */
 .input-unit{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px}.input-unit input{min-width:0}.input-unit span{font-size:14px;font-weight:700;color:#526477;padding-right:3px}
+
+/* Versão 0.3 — tabelas normativas e seletores padronizados */
+.norm-table-wrap{margin-top:16px;overflow-x:auto}.norm-table-wrap h3{font-size:14px;color:var(--navy);margin:0 0 6px}.norm-table-wrap p{font-size:11px;color:#71808e;margin:0 0 9px}.norm-table{width:100%;border-collapse:collapse;font-size:12px;background:#fff}.norm-table th,.norm-table td{padding:9px 8px;border:1px solid var(--line);text-align:right;white-space:nowrap}.norm-table th:first-child,.norm-table td:first-child{text-align:left}.norm-table th{background:#f1f5f8;color:var(--navy)}

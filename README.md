@@ -1,16 +1,16 @@
 # SIA — Sistema Integrado de Armaduras
 
-**Versão 0.2**
+**Versão 0.3**
 
 Aplicação web estática (HTML, CSS e JavaScript), preparada para publicação no GitHub Pages.
 
-## Ajustes da versão 0.2
+## Ajustes da versão 0.3\n- Bitolas selecionadas em lista fixa: 5; 6,3; 8; 10; 12,5; 16; 20; 25; 32; 40.\n- Módulo 01 solicita fck, bitola e aço (CA-50 padrão), sem comprimento básico ou fator manual.\n- Emendas calculadas automaticamente para boa e má aderência.\n- Resultados mostram os cenários de percentual de barras emendadas e coeficiente α₀t, sem campo de entrada para fator.\n- Emendas por traspasse acima de 32 mm são bloqueadas.
 - Campos de diâmetro exibem a unidade `mm` fora do campo editável.
 - Campos de bitola usam o rótulo `Ø BARRA =`, com o valor numérico editável e `mm` como unidade fixa externa.
 - Demais campos em milímetros também exibem a unidade fora do campo de entrada.
 
 ## Módulos incluídos
-1. Emendas por traspasse — estimativa com comprimento básico e fator informado.
+1. Emendas por traspasse — cálculo preliminar automático por fck, bitola, aço e condição de aderência; cenários de α₀t apresentados nos resultados.
 2. Ancoragem com gancho — geometria do arco e prolongamento.
 3. Dobras — raio e comprimento de arco pelo eixo da barra.
 4. Distribuição reta — quantidade e espaçamento efetivo.
