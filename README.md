@@ -67,3 +67,7 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 ## Versão 1.1
 - Lista de fck reescrita com opções HTML explícitas de 9, 12 e 15 MPa, além das demais classes.
 - Parâmetro de versão no carregamento de `app.js` para evitar que o navegador reutilize o JavaScript antigo em cache.
+
+
+## Versão 1.2
+- Módulo 05 — Distribuição circular: ângulo inicial (graus) definido como 360° por padrão.
