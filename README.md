@@ -80,3 +80,9 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 ## Versão 1.4
 - Módulo 05 — Distribuição circular: removido o campo fck dos dados de entrada e da saída de resultados, pois não participa do cálculo geométrico.
 - Mantidos raio padrão de 100 cm e ângulo inicial padrão de 360°.
+
+
+## Versão 1.4.1 — Desenhos didáticos
+- Incluídos esquemas vetoriais SVG didáticos nos nove módulos, com textos em português do Brasil.
+- Os esquemas aparecem ao abrir o módulo e atualizam as cotas/identificações conforme os dados de entrada.
+- Mantidos os cálculos e os padrões aprovados da versão 1.4.

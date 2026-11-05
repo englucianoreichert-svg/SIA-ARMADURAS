@@ -5,3 +5,13 @@
 
 /* Versão 0.3 — tabelas normativas e seletores padronizados */
 .norm-table-wrap{margin-top:16px;overflow-x:auto}.norm-table-wrap h3{font-size:14px;color:var(--navy);margin:0 0 6px}.norm-table-wrap p{font-size:11px;color:#71808e;margin:0 0 9px}.norm-table{width:100%;border-collapse:collapse;font-size:12px;background:#fff}.norm-table th,.norm-table td{padding:9px 8px;border:1px solid var(--line);text-align:right;white-space:nowrap}.norm-table th:first-child,.norm-table td:first-child{text-align:left}.norm-table th{background:#f1f5f8;color:var(--navy)}
+
+
+/* Esquemas didáticos vetoriais em português */
+.didactic{margin:12px 0 16px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.didactic-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;color:var(--navy);font-size:12px}
+.didactic-head span{font-size:10px;color:#7b8995;font-weight:400}
+.didactic svg{display:block;width:100%;height:auto;max-height:310px}
+.didactic .dtitle{font:700 12px Arial,sans-serif;fill:#17324d}
+.didactic .dtext{font:11px Arial,sans-serif;fill:#344b5d}
+@media(max-width:560px){.didactic{padding:7px}.didactic-head{align-items:flex-start;flex-direction:column}.didactic svg{min-height:150px}}
