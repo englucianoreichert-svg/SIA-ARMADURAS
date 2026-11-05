@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17324d">
+<title>SIA | Sistema Integrado de Armaduras</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brandmark">SIA</div>
+  <div><strong>Sistema Integrado de Armaduras</strong><small>Engenharia civil · Cálculos e detalhamento</small></div>
+  <div class="top-actions"><button id="exportData" class="btn ghost">Exportar dados</button><label class="btn ghost filebtn">Importar dados<input id="importData" type="file" accept=".json"></label></div>
+</header>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="side-title">MÓDULOS</div>
+    <nav id="moduleNav"></nav>
+    <div class="side-note"><b>Unidades</b><br>Comprimento: cm / mm / m<br>Área: cm² / m²<br>Massa: kg</div>
+    <div class="side-note version">SIA · versão inicial 0.1</div>
+  </aside>
+  <main>
+    <section class="welcome" id="welcome">
+      <div class="eyebrow">FERRAMENTA DE ENGENHARIA</div>
+      <h1>Detalhamento de armaduras<br><span>com cálculos integrados.</span></h1>
+      <p>Selecione um módulo para calcular, conferir parâmetros e registrar resultados de projeto.</p>
+      <div class="module-cards" id="moduleCards"></div>
+      <div class="notice"><b>Nota técnica:</b> esta versão é uma base computacional inicial. Antes de uso em projeto executivo, valide fórmulas, coeficientes, tabelas e critérios com as normas vigentes e o responsável técnico. O sistema não substitui análise estrutural nem aprovação de alteração de projeto.</div>
+    </section>
+    <section id="workspace" class="workspace hidden">
+      <div class="workspace-head"><div><div class="eyebrow" id="moduleNumber"></div><h1 id="moduleTitle"></h1><p id="moduleDescription"></p></div><button id="resetModule" class="btn ghost">Restaurar exemplo</button></div>
+      <div class="workgrid"><div class="panel"><h2>Dados de entrada</h2><form id="calcForm"></form><div class="form-actions"><button class="btn primary" id="calculate" type="button">Calcular</button><button class="btn ghost" id="saveResult" type="button">Salvar cálculo</button></div></div>
+      <div class="panel result-panel"><h2>Resultados</h2><div id="results" class="results"><div class="empty">Preencha os dados e selecione Calcular.</div></div><div id="diagram" class="diagram"></div></div></div>
+      <div class="panel history-panel"><div class="history-head"><h2>Histórico deste módulo</h2><button id="clearHistory" class="btn small ghost">Limpar histórico</button></div><div id="history"></div></div>
+    </section>
+  </main>
+</div>
+<footer>Desenvolvido como base do SIA · Responsabilidade técnica e validação normativa permanecem com o profissional habilitado.</footer>
+<script src="js/app.js"></script>
+</body>
+</html>
