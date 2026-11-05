@@ -56,4 +56,3 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 - Desenhos técnicos SVG com cotas e identificação das barras.
 - Intercâmbio JSON com rotinas AutoLISP para AutoCAD 2025.
 - Testes automatizados dos cálculos.
-\n\n### Nota sobre bitolas padronizadas\nA lista de seleção utiliza 5; 6,3; 8; 10; 12,5; 16; 20; 25; 32; 40 mm. O diâmetro nominal de 32 mm é mantido na série padronizada; 30 mm não deve ser apresentado como bitola nominal padronizada sem especificação particular do produto.\n
