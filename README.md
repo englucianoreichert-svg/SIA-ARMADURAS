@@ -82,7 +82,6 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 - Mantidos raio padrão de 100 cm e ângulo inicial padrão de 360°.
 
 
-## Versão 1.4.1 — Desenhos didáticos
-- Incluídos esquemas vetoriais SVG didáticos nos nove módulos, com textos em português do Brasil.
-- Os esquemas aparecem ao abrir o módulo e atualizam as cotas/identificações conforme os dados de entrada.
-- Mantidos os cálculos e os padrões aprovados da versão 1.4.
+## Pacote restaurado — versão 1.4 sem desenhos ilustrativos
+- Removidos os esquemas SVG adicionados na versão experimental 1.4.1.
+- Mantidos os módulos, campos, cálculos e padrões da versão 1.4.

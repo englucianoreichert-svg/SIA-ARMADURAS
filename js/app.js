@@ -40,54 +40,7 @@ function fieldHTML(f){
  return `<div class="field ${label.length>35?"full":""}"><label for="${id}">${displayLabel}</label>${isMm?`<div class="input-unit">${control}${unit}</div>`:control}</div>`
 }
 function values(){let o={};current.fields.forEach(f=>o[f[0]]=$( "#"+f[0]).value);return o}
-
-function didacticDiagram(v){
- const t=(x,y,s,anchor="middle")=>`<text x="${x}" y="${y}" text-anchor="${anchor}" class="dtext">${s}</text>`;
- const line=(x1,y1,x2,y2,c="#256b91",w=4)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" stroke-linecap="round"/>`;
- const dim=(x1,y1,x2,y2,label)=>`${line(x1,y1,x2,y2,"#d18b24",1.8)}${t((x1+x2)/2,(y1+y2)/2-8,label)}`;
- let title="",body="";
- switch(current.id){
- case "splice":
- title="EMENDA POR TRASPASSE — VISTA LATERAL";
- body=`${line(70,105,690,105)}${line(70,145,690,145,"#16845b")}${line(300,105,690,105,"#256b91",6)}${line(70,145,460,145,"#16845b",6)}${dim(300,78,460,78,"Comprimento de traspasse (l₀)")}${t(380,190,"Duas barras sobrepostas na região de emenda")}${t(380,220,"Conferir posição das emendas, aderência e percentual na mesma seção")}`;
- break;
- case "anchor":
- title="ANCORAGEM — VISTA LATERAL";
- body=`${line(80,130,430,130)}${line(430,130,430,70)}${line(430,70,520,70)}${dim(90,95,410,95,"Comprimento de ancoragem")}${t(560,75,"Gancho")}${t(560,105,"Pino: Ø interno")}${t(380,190,"Barra longitudinal ancorada no concreto")}${t(380,220,"A geometria do gancho não substitui a verificação do comprimento necessário")}`;
- break;
- case "bend":
- title="DOBRA DE ARMADURA LONGITUDINAL — VISTA LATERAL";
- body=`${line(70,90,340,90)}${line(340,90,430,180)}${line(430,180,650,180)}${dim(340,55,430,145,"Raio pelo eixo")}${t(520,145,"Trecho reto")}${t(180,65,"Barra antes da dobra")}${t(530,215,"Ponta após a dobra")}${t(380,245,"Pino interno e trecho reto são calculados automaticamente")}`;
- break;
- case "straight":
- title="DISTRIBUIÇÃO RETA — VISTA EM PLANTA";
- body=`${line(80,90,680,90,"#64798a",2)}${Array.from({length:9},(_,i)=>line(100+i*70,75,100+i*70,105,"#16845b",4)).join("")}${dim(100,135,660,135,"Comprimento útil")}${t(380,180,"Barras paralelas e igualmente espaçadas")}${t(380,210,"Afastamentos laterais considerados no comprimento útil")}`;
- break;
- case "circular":
- title="DISTRIBUIÇÃO CIRCULAR — VISTA SUPERIOR";
- body=`<circle cx="380" cy="130" r="92" fill="none" stroke="#64798a" stroke-width="2"/>${Array.from({length:12},(_,i)=>{let a=(i*30-90)*Math.PI/180;return `<circle cx="${380+92*Math.cos(a)}" cy="${130+92*Math.sin(a)}" r="5" fill="#16845b"/>`}).join("")}${line(380,130,472,130,"#d18b24",2)}${t(425,118,`Raio = ${fmt(num(v.radius||100))} cm`)}${t(380,250,`Ângulo inicial = ${fmt(num(v.start||360),0)}° · espaçamento máximo = ${fmt(num(v.spacing||30))} cm`)}`;
- break;
- case "helix":
- title="ESPIRAL DE ESTACA — VISTA LATERAL";
- body=`${line(170,55,170,220,"#64798a",2)}${line(590,55,590,220,"#64798a",2)}${Array.from({length:6},(_,i)=>`<path d="M170 ${65+i*27} C275 ${38+i*27},485 ${92+i*27},590 ${65+i*27}" fill="none" stroke="#16845b" stroke-width="4"/>`).join("")}${dim(125,65,125,220,`Altura ${fmt(num(v.height||40))} cm`)}${t(380,245,`Passo = ${fmt(num(v.pitch||5))} cm · diâmetro = ${fmt(num(v.diameter||15))} cm`)}`;
- break;
- case "mesh":
- title="TELA SOLDADA — VISTA EM PLANTA";
- body=`${Array.from({length:7},(_,i)=>line(130+i*42,55,130+i*42,205,"#16845b",2)).join("")}${Array.from({length:5},(_,i)=>line(110,70+i*32,430,70+i*32,"#256b91",2)).join("")}${dim(130,225,172,225,"Espaçamento")}${t(550,100,"Fios longitudinais")}${t(550,130,"Fios transversais")}${t(550,175,"Malha soldada")}`;
- break;
- case "beam":
- title="DISTRIBUIÇÃO DE ARMADURAS EM VIGA — CORTE";
- body=`<rect x="220" y="35" width="320" height="190" fill="none" stroke="#64798a" stroke-width="3"/>${Array.from({length:5},(_,i)=>`<circle cx="${270+i*55}" cy="75" r="10" fill="#16845b"/>`).join("")}${Array.from({length:5},(_,i)=>`<circle cx="${270+i*55}" cy="185" r="10" fill="#16845b"/>`).join("")}<rect x="250" y="55" width="260" height="150" rx="18" fill="none" stroke="#256b91" stroke-width="3"/>${dim(220,245,540,245,"Largura da seção")}${t(590,85,"Barras longitudinais")}${t(590,115,"Estribo")}${t(590,145,"Cobrimento")}`;
- break;
- case "convert":
- title="CONVERSÃO DE BITOLAS — COMPARAÇÃO DE ÁREAS";
- body=`<circle cx="250" cy="125" r="55" fill="#dce8ef" stroke="#256b91" stroke-width="3"/><circle cx="490" cy="125" r="40" fill="#dcefe6" stroke="#16845b" stroke-width="3"/>${t(250,205,`Original Ø ${String(v.oldPhi||12.5).replace(".",",")} mm`)}${t(490,205,`Substituta Ø ${String(v.newPhi||10).replace(".",",")} mm`)}${t(370,115,"→")}${t(370,245,"Comparação de áreas de aço — substituição exige aprovação do projetista")}`;
- break;
- }
- return `<div class="didactic"><div class="didactic-head"><strong>Esquema didático — ${current.name}</strong><span>Representação ilustrativa, sem escala</span></div><svg viewBox="0 0 760 280" role="img" aria-label="${title}"><rect x="8" y="8" width="744" height="264" rx="10" fill="#fbfdfe" stroke="#d8e1e8"/><text x="380" y="30" text-anchor="middle" class="dtitle">${title}</text>${body}</svg></div>`;
-}
-
-function showModule(id){current=MODULES.find(m=>m.id===id);$("#welcome").classList.add("hidden");$("#workspace").classList.remove("hidden");$("#moduleNumber").textContent="MÓDULO "+current.n;$("#moduleTitle").textContent=current.name;$("#moduleDescription").textContent=current.desc;$("#calcForm").innerHTML=`<div class="field-grid">${current.fields.map(fieldHTML).join("")}</div>`;$("#calcForm").oninput=()=>{$("#diagram").innerHTML=didacticDiagram(values())};$("#calcForm").onchange=()=>{$("#diagram").innerHTML=didacticDiagram(values())};$("#results").innerHTML='<div class="empty">Preencha os dados e selecione Calcular.</div>';$("#diagram").innerHTML=didacticDiagram(values());lastResult=null;renderHistory();document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.id===id));}
+function showModule(id){current=MODULES.find(m=>m.id===id);$("#welcome").classList.add("hidden");$("#workspace").classList.remove("hidden");$("#moduleNumber").textContent="MÓDULO "+current.n;$("#moduleTitle").textContent=current.name;$("#moduleDescription").textContent=current.desc;$("#calcForm").innerHTML=`<div class="field-grid">${current.fields.map(fieldHTML).join("")}</div>`;$("#results").innerHTML='<div class="empty">Preencha os dados e selecione Calcular.</div>';$("#diagram").innerHTML="";lastResult=null;renderHistory();document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.id===id));}
 MODULES.forEach(m=>{let b=document.createElement("button");b.dataset.id=m.id;b.innerHTML=`<span class="nav-num">${m.n}</span>${m.name}`;b.onclick=()=>showModule(m.id);nav.append(b);let c=document.createElement("button");c.className="module-card";c.innerHTML=`<span class="num">MÓDULO ${m.n}</span><b>${m.name}</b><small>${m.desc}</small>`;c.onclick=()=>showModule(m.id);cards.append(c)});
 function metric(k,v){return `<div class="metric"><span>${k}</span><strong>${v}</strong></div>`}
 function calculate(){
@@ -199,7 +152,7 @@ function calculate(){
  }
  lastResult={module:current.name,inputs:v,outputs:out,notes,status,date:new Date().toISOString()};renderResult(lastResult,diagram);
 }
-function renderResult(r,diagram=""){let html=r.outputs.map(x=>metric(x[0],x[1])).join("");let cls=r.status==="bad"?"bad":r.status==="warn"?"warn":"";html+=`<div class="status ${cls}">${r.status==="bad"?"NÃO ATENDE — revisar geometria":r.status==="warn"?"ATENÇÃO — revisar distribuição em camadas":"RESULTADO CALCULADO — conferir critérios de projeto"}</div>`;html+=`<div class="result-note">${r.notes.map(x=>"• "+x).join("<br>")}</div>`;$("#results").innerHTML=html;$("#diagram").innerHTML=didacticDiagram(r.inputs)+(diagram||"");}
+function renderResult(r,diagram=""){let html=r.outputs.map(x=>metric(x[0],x[1])).join("");let cls=r.status==="bad"?"bad":r.status==="warn"?"warn":"";html+=`<div class="status ${cls}">${r.status==="bad"?"NÃO ATENDE — revisar geometria":r.status==="warn"?"ATENÇÃO — revisar distribuição em camadas":"RESULTADO CALCULADO — conferir critérios de projeto"}</div>`;html+=`<div class="result-note">${r.notes.map(x=>"• "+x).join("<br>")}</div>`;$("#results").innerHTML=html;$("#diagram").innerHTML=diagram;}
 function historyKey(){return "sia-history-"+current.id}
 function renderHistory(){let h=JSON.parse(localStorage.getItem(historyKey())||"[]");$("#history").innerHTML=h.length?h.slice().reverse().map(x=>`<div class="history-item"><span>${new Date(x.date).toLocaleString("pt-BR")} · ${x.module}</span><b>${x.outputs[0]?.[1]||"Cálculo"}</b></div>`).join(""):'<div class="empty">Nenhum cálculo salvo neste módulo.</div>'}
 $("#calculate").onclick=()=>{try{calculate()}catch(e){$("#results").innerHTML=`<div class="status bad">${e.message}</div>`}};
