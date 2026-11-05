@@ -1,7 +1,7 @@
 const MODULES = [
 {id:"splice",n:"01",name:"Emendas por traspasse",desc:"Comprimento calculado automaticamente a partir do fck, bitola e aço. Apresenta boa e má aderência e os cenários normativos de percentual emendado.",fields:[["fck","fck do concreto (MPa)",30,"fck"],["phi","Ø BARRA =",10,"bitola"],["steel","Tipo de aço", "CA-50","steel"]]},
-{id:"anchor",n:"02",name:"Ancoragem com gancho",desc:"Seleciona fck, bitola e aço nos mesmos padrões do Módulo 01. Calcula automaticamente os comprimentos de ancoragem de referência para boa e má aderência; os dados do gancho definem sua geometria.",fields:[["fck","fck do concreto (MPa)",30,"fck"],["phi","Ø BARRA =",10,"bitola"],["steel","Tipo de aço","CA-50","steel"],["pin","Diâmetro interno do pino (mm)",40,"number"],["angle","Ângulo do gancho (graus)",180,"select",[90,135,180]],["straight","Prolongamento reto do gancho (número de bitolas)",2,"number"]]},
-{id:"bend",n:"03",name:"Dobras de armaduras",desc:"Geometria de dobra pelo eixo da barra, com raio interno e diâmetro de pino informados.",fields:[["phi","Ø BARRA =",8,"bitola"],["pin","Diâmetro interno do pino (mm)",40,"number"],["angle","Ângulo da dobra (graus)",180,"select",[45,90,135,180]],["straight","Trecho reto após a dobra (cm)",1.6,"number"]]},
+{id:"anchor",n:"02",name:"Ancoragem",desc:"Selecione fck, bitola, aço e configuração Lb1 (reta) ou Lbe (gancho). O diâmetro interno mínimo do pino é calculado automaticamente conforme a Tabela 9.1 da ABNT NBR 6118:2023 e apresentado nos resultados para conferência.",fields:[["fck","fck do concreto (MPa)",30,"fck"],["phi","Ø BARRA =",10,"bitola"],["steel","Tipo de aço","CA-50","steel"],["anchorType","Configuração da ancoragem","Lb1","anchorType"],["coverOK","Cobrimento normal ao plano do gancho ≥ 3φ?","Não","yesno"],["angle","Ângulo do gancho (graus)",180,"select",[90,135,180]],]},
+{id:"bend",n:"03",name:"Dobras de armaduras",desc:"Dobra de armadura longitudinal conforme ABNT NBR 6118:2023, com diâmetro interno do pino e ponta reta calculados automaticamente.",fields:[["phi","Ø BARRA =",8,"bitola"],["steel","Tipo de aço","CA-50","steel"],["angle","Ângulo da dobra (graus)",180,"select",[90,135,180]]]},
 {id:"straight",n:"04",name:"Distribuição reta",desc:"Calcula número de barras com espaçamento máximo e distribuição uniforme entre as extremidades.",fields:[["length","Comprimento da forma (cm)",1350,"number"],["coverL","Cobrimento/afastamento esquerdo (cm)",0,"number"],["coverR","Cobrimento/afastamento direito (cm)",0,"number"],["spacing","Espaçamento máximo (cm)",50,"number"]]},
 {id:"circular",n:"05",name:"Distribuição circular",desc:"Distribui barras igualmente em 360°. O raio deve ser medido na linha dos eixos das barras.",fields:[["radius","Raio da distribuição (cm)",622.75,"number"],["spacing","Espaçamento máximo no arco (cm)",30,"number"],["start","Ângulo inicial (graus)",0,"number"]]},
 {id:"helix",n:"06",name:"Espiral de estaca",desc:"Comprimento geométrico da hélice, sem pontas, ganchos, emendas ou perdas de corte.",fields:[["diameter","Diâmetro da linha de centro da espiral (cm)",15,"number"],["height","Altura da espiral (cm)",40,"number"],["pitch","Passo (cm)",5,"number"],["phi","Ø BARRA =",8,"bitola"],["tail","Adicional para pontas/fechamento (cm)",0,"number"]]},
@@ -20,8 +20,10 @@ function fieldHTML(f){
  let control="";
  if(type==="select") control=`<select id="${id}">${opts.map(x=>`<option value="${x}" ${x===value?"selected":""}>${x}°</option>`).join("")}</select>`;
  else if(type==="bitola") control=`<select id="${id}">${[5,6.3,8,10,12.5,16,20,25,32,40].map(x=>`<option value="${x}" ${Number(x)===Number(value)?"selected":""}>${String(x).replace(".",",")}</option>`).join("")}</select>`;
- else if(type==="fck") control=`<select id="${id}">${[20,25,30,35,40,45,50].map(x=>`<option value="${x}" ${x===value?"selected":""}>${x} MPa</option>`).join("")}</select>`;
+ else if(type==="fck") control=`<select id="${id}">${[9,12,15,20,25,30,35,40,45,50].map(x=>`<option value="${x}" ${x===value?"selected":""}>${x} MPa</option>`).join("")}</select>`;
  else if(type==="steel") control=`<select id="${id}"><option value="CA-50" ${value==="CA-50"?"selected":""}>CA-50</option><option value="CA-60" ${value==="CA-60"?"selected":""}>CA-60</option></select>`;
+ else if(type==="anchorType") control=`<select id="${id}"><option value="Lb1" ${value==="Lb1"?"selected":""}>Lb1 — Reto (boa aderência)</option><option value="Lbe" ${value==="Lbe"?"selected":""}>Lbe — Gancho (má aderência)</option></select>`;
+ else if(type==="yesno") control=`<select id="${id}"><option value="Não" ${value==="Não"?"selected":""}>Não</option><option value="Sim" ${value==="Sim"?"selected":""}>Sim</option></select>`;
  else control=`<input id="${id}" type="${type}" value="${value}" ${type==="number"?'step="any"':''}>`;
  const unit=isMm?'<span>mm</span>':"";
  return `<div class="field ${label.length>35?"full":""}"><label for="${id}">${displayLabel}</label>${isMm?`<div class="input-unit">${control}${unit}</div>`:control}</div>`
@@ -37,7 +39,8 @@ function calculate(){
  switch(current.id){
  case "splice":{
   const fck=num(v.fck), d=num(v.phi), fyk=v.steel==="CA-60"?600:500, gammaS=1.15, gammaC=1.4;
-  if(!(fck>=20&&fck<=50)||!d||!["CA-50","CA-60"].includes(v.steel))throw Error("Selecione fck entre 20 e 50 MPa, bitola e tipo de aço.");
+  if(![9,12,15,20,25,30,35,40,45,50].includes(fck)||!d||!["CA-50","CA-60"].includes(v.steel))throw Error("Selecione um fck disponível, bitola e tipo de aço.");
+  if(fck<20){status="warn";notes.push("ATENÇÃO: fck inferior a 20 MPa. Este valor está abaixo da classe mínima usual para concreto estrutural armado na ABNT NBR 6118. Os resultados são apenas estimativos e não devem ser adotados como dimensionamento normativo sem enquadramento técnico específico.");}
   if(d>32){status="bad";out=[["Bitola selecionada",String(d).replace(".",",")+" mm"],["Emenda por traspasse","NÃO PERMITIDA"]];notes.push("A NBR 6118 não permite emenda por traspasse de barras com diâmetro superior a 32 mm. Avaliar luva, solda ou solução específica de projeto.");break}
   const fctkinf=0.21*Math.pow(fck,2/3), fctd=fctkinf/gammaC;
   const eta1=2.25, eta3=d<=32?1:(132-d)/100, fyd=fyk/gammaS;
@@ -63,26 +66,51 @@ function calculate(){
   notes.push("Verificar Tabela 9.3, armadura transversal, afastamento entre barras emendadas, cobrimento, confinamento, posição da emenda e demais condições dos itens 9.4 e 9.5 da ABNT NBR 6118. Para barras comprimidas aplica-se expressão distinta.");
   diagram=table;
   break}
- case "anchor":case "bend":{
-  if(!positive("phi","pin")||num(v.straight)<0)throw Error("Diâmetro e pino devem ser positivos; prolongamento não pode ser negativo.");
-  const d=num(v.phi);
-  const a=num(v.angle)*Math.PI/180, r=(num(v.pin)+d)/2/10, arc=r*a;
-  const straight=num(v.straight)*(d/10);
-  const total=arc+straight;
-  out=[["fck selecionado",fmt(num(v.fck),0)+" MPa"],["Tipo de aço",v.steel],["Bitola selecionada",String(d).replace(".",",")+" mm"],["Raio interno do pino",fmt(num(v.pin)/20)+" cm"],["Raio pelo eixo da barra",fmt(r)+" cm"],["Ângulo do gancho",fmt(num(v.angle),0)+"°"],["Comprimento do arco",fmt(arc)+" cm"],["Prolongamento reto",fmt(straight)+" cm"],["Comprimento geométrico do gancho",fmt(total)+" cm"]];
-  if(current.id==="anchor"){
-   const fck=num(v.fck), fyk=v.steel==="CA-60"?600:500, fctd=0.21*Math.pow(fck,2/3)/1.4, fyd=fyk/1.15, eta1=2.25, eta3=d<=32?1:(132-d)/100;
-   if(!(fck>=20&&fck<=50)||!["CA-50","CA-60"].includes(v.steel))throw Error("Selecione fck entre 20 e 50 MPa e um tipo de aço válido.");
-   if(d>32){status="bad";notes.push("Bitola superior a 32 mm: exige solução específica de ancoragem e detalhamento. Não utilizar este resultado automaticamente.");}
-   for(const [name,eta2] of [["Boa aderência",1],["Má aderência",0.7]]){
-    const fbd=eta1*eta2*eta3*fctd, lb=(d/4)*(fyd/fbd), lbnec=Math.max(lb,0.3*lb,10*d,100);
-    out.push([`Resistência de aderência — ${name}`,fmt(fbd)+" MPa"],[`Ancoragem básica — ${name}`,fmt(lb/10)+" cm"],[`Ancoragem necessária de referência — ${name}`,fmt(lbnec/10)+" cm"]);
-   }
-   notes.push("Os comprimentos de ancoragem são apresentados para boa e má aderência, sem aplicar automaticamente redução por gancho (α=1,0). A geometria do gancho é calculada separadamente.");
-   notes.push("O diâmetro interno do pino deve atender ao mínimo normativo aplicável ao tipo de aço, bitola e configuração do gancho. Conferir também cobrimento, confinamento, posição da barra e condições de ancoragem antes de adotar o resultado.");
+ case "anchor":{
+  const d=num(v.phi), fck=num(v.fck), fyk=v.steel==="CA-60"?600:500, gammaS=1.15, gammaC=1.4;
+  if(![9,12,15,20,25,30,35,40,45,50].includes(fck)||!d||!["CA-50","CA-60"].includes(v.steel))throw Error("Selecione fck, bitola e tipo de aço válidos.");
+  if(!["Lb1","Lbe"].includes(v.anchorType))throw Error("Selecione a configuração da ancoragem.");
+  const eta2=v.anchorType==="Lb1"?1.0:0.7;
+  const fctd=0.21*Math.pow(fck,2/3)/gammaC, fyd=fyk/gammaS, eta1=2.25, eta3=d<=32?1:(132-d)/100;
+  const fbd=eta1*eta2*eta3*fctd, lb=(d/4)*(fyd/fbd);
+  const lbmin=Math.max(0.3*lb,10*d,100), alpha=(v.anchorType==="Lbe"&&v.coverOK==="Sim")?0.7:1.0;
+  const lbnec=Math.max(alpha*lb,lbmin);
+  let pinFactor=null, pinStatus="";
+  if(v.steel==="CA-50") pinFactor=d<20?5:8;
+  else if(v.steel==="CA-60"&&d<20) pinFactor=6;
+  if(pinFactor) pinStatus=`${fmt(pinFactor,0)} × φ = ${fmt(pinFactor*d,1)} mm`;
+  else pinStatus="Sem valor tabelado para esta combinação na Tabela 9.1";
+  const angle=num(v.angle);
+  if(v.anchorType==="Lbe"&&![90,135,180].includes(angle))throw Error("Verifique o ângulo do gancho.");
+  let arc=0, hookLength=0;
+  if(v.anchorType==="Lbe"&&pinFactor){
+    const r=(pinFactor*d+d)/2/10; arc=r*(angle*Math.PI/180); hookLength=arc;
   }
-  notes.push("Geometria calculada pelo eixo da barra. Conferir diâmetro mínimo do pino, tipo de barra, cobrimento, confinamento e requisitos específicos do elemento estrutural.");
-  diagram=`<svg viewBox="0 0 360 130" role="img"><path d="M45 20 H150 A45 45 0 0 1 150 110 H300" fill="none" stroke="#078b55" stroke-width="5"/><text x="45" y="14" font-size="11" fill="#536779">Trecho reto + arco pelo eixo + prolongamento</text></svg>`;break}
+  out=[["Configuração selecionada",v.anchorType==="Lb1"?"Lb1 — Reto":"Lbe — Gancho"],["fck selecionado",fmt(fck,0)+" MPa"],["Tipo de aço",v.steel],["Bitola",String(d).replace(".",",")+" mm"],["Condição de aderência adotada",v.anchorType==="Lb1"?"Boa aderência":"Má aderência"],["Resistência de aderência fbd",fmt(fbd)+" MPa"],["Comprimento básico lb",fmt(lb/10)+" cm"],["Comprimento mínimo lb,min",fmt(lbmin/10)+" cm"],["Comprimento necessário adotado",fmt(lbnec/10)+" cm"]];
+  if(v.anchorType==="Lbe"){
+    out.push(["Diâmetro interno mínimo do pino — conferência",pinStatus]);
+    if(pinFactor)out.push(["Comprimento geométrico do arco do gancho",fmt(arc)+" cm"],["Redução por gancho aplicada (α)",fmt(alpha,1)]);
+    else out.push(["Desenvolvimento geométrico do gancho","Não calculado — verificar pino"]);
+  }
+  if(fck<20){status="warn";notes.push("ATENÇÃO: fck inferior a 20 MPa. Valor abaixo da classe mínima usual para concreto estrutural armado. Resultado apenas estimativo.");}
+  if(v.anchorType==="Lbe"&&v.coverOK!=="Sim")notes.push("A redução α=0,7 não foi aplicada porque não foi confirmado cobrimento no plano normal ao gancho ≥ 3φ. Foi mantido α=1,0.");
+  notes.push("Diâmetro interno mínimo calculado pela Tabela 9.1 da ABNT NBR 6118:2023: CA-50, 5φ para bitolas <20 mm e 8φ para bitolas ≥20 mm; CA-60, 6φ para bitolas <20 mm. Para CA-60 com bitola ≥20 mm não há valor tabelado nessa tabela.");
+  notes.push("Atenção: a condição de boa ou má aderência não é determinada simplesmente pela presença de gancho; depende da posição da barra durante a concretagem, conforme item 9.3.1. A seleção Lb1/Lbe identifica os cenários de cálculo solicitados, mas a classificação real deve ser confirmada no projeto.");
+  notes.push("A relação As,calc/As,ef foi considerada igual a 1,00 por não haver integração com o dimensionamento estrutural. Verificar confinamento, armadura transversal, cobrimento e força a ancorar.");
+  diagram=`<svg viewBox="0 0 360 130" role="img"><path d="M35 25 H145 A45 45 0 0 1 145 115 H310" fill="none" stroke="#078b55" stroke-width="5"/><text x="35" y="17" font-size="11" fill="#536779">Esquema ilustrativo do eixo da barra</text></svg>`;
+  break}
+ case "bend":{
+  const d=num(v.phi), angle=num(v.angle), steel=v.steel||"CA-50";
+  if(!(d>0)||![90,135,180].includes(angle))throw Error("Verifique a bitola e o ângulo da dobra.");
+  let pinFactor=null;
+  if(steel==="CA-50") pinFactor=d<20?5:8;
+  else if(steel==="CA-60"&&d<20) pinFactor=6;
+  if(!pinFactor)throw Error("A ABNT NBR 6118:2023 não apresenta diâmetro de pino tabelado para CA-60 com bitola ≥ 20 mm. Verifique solução específica.");
+  const pin=pinFactor*d, r=(pin+d)/2/10, a=angle*Math.PI/180, arc=r*a;
+  const straightFactor=angle===180?2:(angle===135?4:8), straight=straightFactor*d/10, total=arc+straight;
+  out=[["Tipo de armadura","Longitudinal"],["Tipo de aço",steel],["Diâmetro interno mínimo do pino",`${fmt(pinFactor,0)} × φ = ${fmt(pin,1)} mm`],["Raio interno",fmt(pin/20)+" cm"],["Raio pelo eixo da barra",fmt(r)+" cm"],["Ângulo da dobra",fmt(angle,0)+"°"],["Ponta reta mínima",`${straightFactor} × φ = ${fmt(straight,2)} cm`],["Comprimento do arco",fmt(arc)+" cm"],["Comprimento geométrico (arco + ponta reta)",fmt(total)+" cm"]];
+  notes.push("Critérios para ganchos de armaduras longitudinais de tração: ABNT NBR 6118:2023, item 9.4.2.3 e Tabela 9.1. A ponta reta mínima depende da geometria: 2φ para gancho semicircular, 4φ para ângulo interno de 45° e 8φ para ângulo reto.");
+  diagram=`<svg viewBox="0 0 360 130" role="img"><path d="M45 20 H150 A45 45 0 0 1 150 110 H300" fill="none" stroke="#078b55" stroke-width="5"/></svg>`;break}
  case "straight":{
   let L=num(v.length)-num(v.coverL)-num(v.coverR), s=num(v.spacing);if(L<=0||s<=0)throw Error("Comprimento útil e espaçamento devem ser positivos.");
   let intervals=Math.ceil(L/s), bars=intervals+1, actual=L/intervals;out=[["Comprimento útil",fmt(L)+" cm"],["Intervalos",intervals],["Quantidade de barras",bars],["Espaçamento real",fmt(actual)+" cm"]];notes.push("Distribuição uniforme com barras nas duas extremidades do comprimento útil. Confirmar se os afastamentos informados representam eixo de barra ou face da forma.");break}
