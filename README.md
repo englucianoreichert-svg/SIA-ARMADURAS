@@ -71,3 +71,12 @@ Esta versão é um protótipo computacional inicial, não um software de dimensi
 
 ## Versão 1.2
 - Módulo 05 — Distribuição circular: ângulo inicial (graus) definido como 360° por padrão.
+
+
+## Versão 1.3
+- Módulo 05 — Distribuição circular: raio da distribuição definido como 100 cm por padrão; ângulo inicial permanece em 360°.
+
+
+## Versão 1.4
+- Módulo 05 — Distribuição circular: removido o campo fck dos dados de entrada e da saída de resultados, pois não participa do cálculo geométrico.
+- Mantidos raio padrão de 100 cm e ângulo inicial padrão de 360°.
